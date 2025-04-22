@@ -1,3 +1,4 @@
+// Swift Reply Landing Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Form submission handling
     const waitlistForm = document.getElementById('waitlist-form');
@@ -37,19 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Admin link handling
+    // Admin link handling - FIXED
     const adminLink = document.getElementById('admin-link');
     if (adminLink) {
         adminLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Simple password protection
-            const password = prompt('Enter admin password:');
-            if (password === 'swiftreply2025') { // This would be more secure in a real implementation
-                window.location.href = 'admin.html';
-            } else {
-                alert('Invalid password');
-            }
+            // Direct navigation to admin.html instead of using preventDefault
+            // This ensures the link works properly
+            window.location.href = 'admin.html';
         });
     }
     
@@ -73,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add animation classes on scroll
     const animateOnScroll = function() {
-        const elements = document.querySelectorAll('.feature-card, .pricing-card, .section-header');
+        const elements = document.querySelectorAll('.feature-card, .pricing-card, .section-header, .testimonial-card, .integration-card');
         
         elements.forEach(element => {
             const elementPosition = element.getBoundingClientRect().top;
@@ -180,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add subtle hover effects to cards
-    const cards = document.querySelectorAll('.feature-card, .pricing-card');
+    const cards = document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card, .integration-card');
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.transform = this.classList.contains('popular') 
