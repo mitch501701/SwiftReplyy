@@ -1,4 +1,3 @@
-// Swift Reply Landing Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Form submission handling
     const waitlistForm = document.getElementById('waitlist-form');
@@ -33,112 +32,109 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Error saving data:', error);
-                    showError('form', 'There was an error submitting your information. Please try again.');
+                    alert('There was an error submitting your information. Please try again.');
                 });
         });
     }
     
-    // Admin link handling - FIXED
-    const adminLink = document.getElementById('admin-link');
-    if (adminLink) {
-        adminLink.addEventListener('click', function(e) {
-            // Direct navigation to admin.html instead of using preventDefault
-            // This ensures the link works properly
-            window.location.href = 'admin.html';
+    // Add subtle hover effects to cards
+    const cards = document.querySelectorAll('.feature-card, .pricing-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = this.classList.contains('popular') 
+                ? 'scale(1.05) translateY(-4px)' 
+                : 'translateY(-4px)';
+            this.style.boxShadow = 'var(--shadow-md)';
+            this.style.borderColor = 'var(--color-primary-light)';
+            this.style.transition = 'all 0.2s ease';
         });
-    }
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = this.classList.contains('popular') 
+                ? 'scale(1.05)' 
+                : 'translateY(0)';
+            this.style.boxShadow = '';
+            this.style.borderColor = '';
+        });
+    });
     
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
             
             const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
             const targetElement = document.querySelector(targetId);
+            
             if (targetElement) {
                 window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Offset for header
+                    top: targetElement.offsetTop - 80,
                     behavior: 'smooth'
                 });
             }
         });
     });
     
-    // Add animation classes on scroll
-    const animateOnScroll = function() {
-        const elements = document.querySelectorAll('.feature-card, .pricing-card, .section-header, .testimonial-card, .integration-card');
-        
-        elements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition < windowHeight - 100) {
-                element.classList.add('fade-in');
-            }
-        });
-    };
-    
-    // Run once on load
-    animateOnScroll();
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', animateOnScroll);
-    
     // Form validation
     function validateForm(formData) {
         let isValid = true;
         
-        // Reset previous error messages
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-        
         // Validate name
-        if (!formData.name.trim()) {
-            showError('name', 'Name is required');
+        if (!formData.name || formData.name.trim() === '') {
+            showError('name', 'Please enter your name');
             isValid = false;
+        } else {
+            clearError('name');
         }
         
         // Validate email
-        if (!formData.email.trim()) {
-            showError('email', 'Email is required');
-            isValid = false;
-        } else if (!isValidEmail(formData.email)) {
+        if (!formData.email || !isValidEmail(formData.email)) {
             showError('email', 'Please enter a valid email address');
             isValid = false;
+        } else {
+            clearError('email');
         }
         
         return isValid;
     }
     
-    // Display error message
     function showError(fieldId, message) {
         const field = document.getElementById(fieldId);
-        if (field) {
-            const errorElement = document.createElement('div');
-            errorElement.className = 'error-message';
-            errorElement.style.color = 'var(--color-error)';
-            errorElement.style.fontSize = '0.875rem';
-            errorElement.style.marginTop = 'var(--space-2)';
-            errorElement.textContent = message;
-            
-            field.parentNode.appendChild(errorElement);
-            field.style.borderColor = 'var(--color-error)';
-            
-            // Add focus event to clear error on focus
-            field.addEventListener('focus', function() {
-                field.style.borderColor = 'var(--color-primary)';
-                const errorMsg = field.parentNode.querySelector('.error-message');
-                if (errorMsg) {
-                    errorMsg.remove();
-                }
-            }, { once: true });
+        const errorElement = document.getElementById(`${fieldId}-error`) || createErrorElement(fieldId);
+        
+        field.style.borderColor = 'var(--color-error)';
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    function clearError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorElement = document.getElementById(`${fieldId}-error`);
+        
+        field.style.borderColor = '';
+        
+        if (errorElement) {
+            errorElement.style.display = 'none';
         }
     }
     
-    // Email validation
+    function createErrorElement(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorElement = document.createElement('div');
+        
+        errorElement.id = `${fieldId}-error`;
+        errorElement.className = 'error-message';
+        errorElement.style.color = 'var(--color-error)';
+        errorElement.style.fontSize = '0.875rem';
+        errorElement.style.marginTop = '4px';
+        
+        field.parentNode.appendChild(errorElement);
+        
+        return errorElement;
+    }
+    
     function isValidEmail(email) {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
     
@@ -154,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check for duplicate email
                 const isDuplicate = existingData.some(entry => entry.email === formData.email);
                 if (isDuplicate) {
+                    showError('email', 'This email is already registered');
                     reject(new Error('This email is already registered'));
                     return;
                 }
@@ -174,24 +171,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Add subtle hover effects to cards
-    const cards = document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card, .integration-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = this.classList.contains('popular') 
-                ? 'scale(1.05) translateY(-4px)' 
-                : 'translateY(-4px)';
-            this.style.boxShadow = 'var(--shadow-md)';
-            this.style.borderColor = 'var(--color-primary-light)';
-            this.style.transition = 'all 0.2s ease';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = this.classList.contains('popular') 
-                ? 'scale(1.05)' 
-                : 'translateY(0)';
-            this.style.boxShadow = '';
-            this.style.borderColor = '';
-        });
-    });
+    // Ensure pricing cards are visible on all devices
+    function ensurePricingCardsVisibility() {
+        const pricingGrid = document.querySelector('.pricing-grid');
+        if (pricingGrid) {
+            // Force display of all pricing cards
+            const pricingCards = pricingGrid.querySelectorAll('.pricing-card');
+            pricingCards.forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // Log to console for debugging
+            console.log('Pricing cards visibility enforced:', pricingCards.length, 'cards found');
+        }
+    }
+    
+    // Call this function to ensure pricing cards are visible
+    ensurePricingCardsVisibility();
 });
