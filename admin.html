@@ -8,395 +8,431 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Admin-specific styles */
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
         .admin-header {
-            background-color: var(--color-text);
-            padding: var(--space-8) 0;
+            margin-bottom: 2rem;
+            text-align: center;
         }
         
-        .admin-header .container {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
+        .admin-login {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--color-border);
         }
         
-        .admin-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+        .admin-login h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .admin-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .admin-form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+            font-size: 1rem;
+        }
+        
+        .admin-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--color-primary);
             color: white;
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
         
-        .admin-title svg {
-            width: 20px;
-            height: 20px;
+        .admin-btn:hover {
+            background-color: var(--color-primary-dark);
         }
         
-        .admin-nav {
-            margin-left: auto;
-        }
-        
-        .admin-nav a {
-            color: var(--color-text-tertiary);
-            font-size: 0.9375rem;
-            transition: color 0.15s ease;
-        }
-        
-        .admin-nav a:hover {
-            color: white;
-        }
-        
-        .admin-content {
-            padding: var(--space-12) 0;
-        }
-        
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: var(--space-8);
+        .admin-dashboard {
+            display: none;
         }
         
         .admin-card {
             background-color: white;
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--color-border);
-            margin-bottom: var(--space-8);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .admin-card h3 {
-            margin-bottom: var(--space-4);
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .admin-card h3 svg {
-            width: 20px;
-            height: 20px;
-            color: var(--color-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--color-border);
         }
         
         .admin-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
         
         .admin-stat {
-            background-color: var(--color-background-secondary);
-            border-radius: var(--radius-md);
-            padding: var(--space-4);
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--color-border);
+            padding: 1rem;
             text-align: center;
         }
         
         .admin-stat-value {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--color-primary);
-            margin-bottom: var(--space-1);
+            margin-bottom: 0.5rem;
         }
         
         .admin-stat-label {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             color: var(--color-text-secondary);
         }
         
-        .chart-container {
-            height: 200px;
-            margin-bottom: var(--space-6);
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
         }
         
-        .email-list {
-            margin-top: var(--space-6);
-        }
-        
-        .email-list-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: var(--space-4);
-            padding: var(--space-3) var(--space-4);
+        .admin-table th,
+        .admin-table td {
+            padding: 0.75rem;
+            text-align: left;
             border-bottom: 1px solid var(--color-border);
+        }
+        
+        .admin-table th {
             font-weight: 600;
-            color: var(--color-text-secondary);
-            font-size: 0.875rem;
-        }
-        
-        .email-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: var(--space-4);
-            padding: var(--space-3) var(--space-4);
-            border-bottom: 1px solid var(--color-border-light);
-            align-items: center;
-        }
-        
-        .email-item:hover {
-            background-color: var(--color-background-secondary);
-        }
-        
-        .email-date {
-            font-size: 0.875rem;
-            color: var(--color-text-tertiary);
-        }
-        
-        .email-actions {
-            display: flex;
-            gap: var(--space-2);
-        }
-        
-        .email-action {
-            background: none;
-            border: none;
-            color: var(--color-text-tertiary);
-            cursor: pointer;
-            padding: var(--space-1);
-            border-radius: var(--radius-sm);
-            transition: all 0.15s ease;
-        }
-        
-        .email-action:hover {
             color: var(--color-text);
-            background-color: var(--color-border-light);
-        }
-        
-        .email-action svg {
-            width: 16px;
-            height: 16px;
+            background-color: var(--color-background-secondary);
         }
         
         .admin-actions {
             display: flex;
-            gap: var(--space-3);
-            margin-top: var(--space-6);
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
-        .no-data {
-            text-align: center;
-            padding: var(--space-8);
-            color: var(--color-text-tertiary);
-        }
-        
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: var(--space-8);
+        .admin-btn-secondary {
             background-color: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+            color: var(--color-text);
             border: 1px solid var(--color-border);
         }
         
-        .login-header {
+        .admin-btn-secondary:hover {
+            background-color: var(--color-background-secondary);
+        }
+        
+        .admin-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
             text-align: center;
-            margin-bottom: var(--space-6);
         }
         
-        .login-header svg {
-            width: 40px;
-            height: 40px;
+        .admin-message.success {
+            background-color: rgba(50, 213, 131, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+        }
+        
+        .admin-message.error {
+            background-color: rgba(255, 77, 79, 0.1);
+            border: 1px solid var(--color-error);
+            color: var(--color-error);
+        }
+        
+        .admin-quick-access {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        .admin-quick-access a {
             color: var(--color-primary);
-            margin-bottom: var(--space-4);
-        }
-        
-        @media (max-width: 768px) {
-            .admin-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .email-item {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .email-list-header {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .email-date {
-                display: none;
-            }
-            
-            .email-list-header .date-header {
-                display: none;
-            }
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="login-screen" class="login-container">
-        <div class="login-header">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-            <h2>Admin Login</h2>
-            <p>Enter your password to access the admin dashboard</p>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Swift Reply Admin</h1>
+            <p>Manage your email signups and analytics</p>
         </div>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        
+        <!-- Login Form - Simplified with clear feedback -->
+        <div id="admin-login" class="admin-login">
+            <h2>Admin Login</h2>
+            
+            <!-- Success/Error Messages -->
+            <div id="login-success-message" class="admin-message success" style="display: none;">
+                Login successful! Loading dashboard...
             </div>
-            <button type="submit" class="btn btn-primary btn-full">Login</button>
-        </form>
+            
+            <div id="login-error-message" class="admin-message error" style="display: none;">
+                Incorrect password. Please try again.
+            </div>
+            
+            <form id="login-form">
+                <div class="admin-form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter admin password">
+                </div>
+                <button type="submit" class="admin-btn">Login</button>
+            </form>
+            
+            <!-- Quick Access Option -->
+            <div class="admin-quick-access">
+                <p>Having trouble? <a id="quick-access-link">Quick access</a></p>
+            </div>
+        </div>
+        
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="admin-dashboard">
+            <div class="admin-card">
+                <h3>Email Signup Analytics</h3>
+                <div class="admin-stats">
+                    <div class="admin-stat">
+                        <div class="admin-stat-value" id="total-signups">0</div>
+                        <div class="admin-stat-label">Total Signups</div>
+                    </div>
+                    <div class="admin-stat">
+                        <div class="admin-stat-value" id="today-signups">0</div>
+                        <div class="admin-stat-label">Today</div>
+                    </div>
+                    <div class="admin-stat">
+                        <div class="admin-stat-value" id="this-week-signups">0</div>
+                        <div class="admin-stat-label">This Week</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h3>Email Signups</h3>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="signups-table-body">
+                            <!-- Table rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="admin-actions">
+                    <button id="export-csv" class="admin-btn">Export as CSV</button>
+                    <button id="clear-data" class="admin-btn admin-btn-secondary">Clear Data</button>
+                </div>
+            </div>
+            
+            <div class="admin-actions">
+                <a href="index.html" class="admin-btn admin-btn-secondary">Back to Website</a>
+                <button id="logout-btn" class="admin-btn">Logout</button>
+            </div>
+        </div>
     </div>
-
-    <div id="admin-dashboard" style="display: none;">
-        <header class="admin-header">
-            <div class="container">
-                <div class="admin-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                    </svg>
-                    Swift Reply Admin
-                </div>
-                <div class="admin-nav">
-                    <a href="index.html">Back to Website</a>
-                </div>
-            </div>
-        </header>
-
-        <main class="admin-content">
-            <div class="container">
-                <div class="admin-card">
-                    <h3>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                        </svg>
-                        Waitlist Analytics
-                    </h3>
-                    <div class="admin-stats">
-                        <div class="admin-stat">
-                            <div class="admin-stat-value" id="total-signups">0</div>
-                            <div class="admin-stat-label">Total Signups</div>
-                        </div>
-                        <div class="admin-stat">
-                            <div class="admin-stat-value" id="today-signups">0</div>
-                            <div class="admin-stat-label">Today</div>
-                        </div>
-                        <div class="admin-stat">
-                            <div class="admin-stat-value" id="week-signups">0</div>
-                            <div class="admin-stat-label">This Week</div>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="signups-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="admin-card">
-                    <h3>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                        </svg>
-                        Email List
-                    </h3>
-                    <div class="email-list">
-                        <div class="email-list-header">
-                            <div>Name</div>
-                            <div>Email</div>
-                            <div class="date-header">Date</div>
-                        </div>
-                        <div id="email-list-container">
-                            <!-- Email list will be populated here -->
-                            <div class="no-data">
-                                <p>No signups yet. Share your landing page to start collecting emails.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="admin-actions">
-                        <button id="export-csv" class="btn btn-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="margin-right: 4px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                            </svg>
-                            Export CSV
-                        </button>
-                        <button id="clear-data" class="btn btn-outline">Clear All Data</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const ADMIN_PASSWORD = 'swiftreply2025';
-            const loginScreen = document.getElementById('login-screen');
+            const adminLogin = document.getElementById('admin-login');
             const adminDashboard = document.getElementById('admin-dashboard');
             const loginForm = document.getElementById('login-form');
-            const emailListContainer = document.getElementById('email-list-container');
+            const passwordInput = document.getElementById('password');
+            const loginSuccessMessage = document.getElementById('login-success-message');
+            const loginErrorMessage = document.getElementById('login-error-message');
+            const quickAccessLink = document.getElementById('quick-access-link');
+            const logoutBtn = document.getElementById('logout-btn');
             const exportCsvBtn = document.getElementById('export-csv');
             const clearDataBtn = document.getElementById('clear-data');
-            const totalSignupsEl = document.getElementById('total-signups');
-            const todaySignupsEl = document.getElementById('today-signups');
-            const weekSignupsEl = document.getElementById('week-signups');
             
-            // Login form handling
+            const ADMIN_PASSWORD = 'swiftreply2025';
+            
+            // Check if already logged in
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+            }
+            
+            // Login form submission
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const password = document.getElementById('password').value;
+                const password = passwordInput.value;
                 
+                // Clear previous messages
+                loginSuccessMessage.style.display = 'none';
+                loginErrorMessage.style.display = 'none';
+                
+                // Check password
                 if (password === ADMIN_PASSWORD) {
-                    loginScreen.style.display = 'none';
-                    adminDashboard.style.display = 'block';
-                    loadData();
-                } else {
-                    // Show error
-                    const passwordInput = document.getElementById('password');
-                    passwordInput.classList.add('shake');
-                    passwordInput.style.borderColor = 'var(--color-error)';
+                    // Show success message
+                    loginSuccessMessage.style.display = 'block';
                     
+                    // Set login state
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    
+                    // Show dashboard after a short delay
+                    setTimeout(showDashboard, 1000);
+                } else {
+                    // Show error message
+                    loginErrorMessage.style.display = 'block';
+                    
+                    // Clear password field
+                    passwordInput.value = '';
+                    
+                    // Focus on password field
+                    passwordInput.focus();
+                    
+                    // Add shake animation to form
+                    loginForm.classList.add('shake');
                     setTimeout(() => {
-                        passwordInput.classList.remove('shake');
+                        loginForm.classList.remove('shake');
                     }, 500);
                 }
             });
             
-            // Load data from localStorage
-            function loadData() {
-                const data = JSON.parse(localStorage.getItem('swiftReplyWaitlist') || '[]');
+            // Quick access link
+            quickAccessLink.addEventListener('click', function() {
+                // Set login state
+                localStorage.setItem('adminLoggedIn', 'true');
                 
-                if (data.length === 0) {
-                    emailListContainer.innerHTML = `
-                        <div class="no-data">
-                            <p>No signups yet. Share your landing page to start collecting emails.</p>
-                        </div>
-                    `;
-                } else {
-                    // Sort by date (newest first)
-                    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                // Show success message
+                loginSuccessMessage.style.display = 'block';
+                
+                // Show dashboard after a short delay
+                setTimeout(showDashboard, 1000);
+            });
+            
+            // Logout button
+            logoutBtn.addEventListener('click', function() {
+                // Clear login state
+                localStorage.removeItem('adminLoggedIn');
+                
+                // Show login form
+                adminDashboard.style.display = 'none';
+                adminLogin.style.display = 'block';
+                
+                // Clear password field
+                passwordInput.value = '';
+            });
+            
+            // Export CSV button
+            exportCsvBtn.addEventListener('click', function() {
+                exportSignupsAsCsv();
+            });
+            
+            // Clear data button
+            clearDataBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all signup data? This action cannot be undone.')) {
+                    localStorage.removeItem('swiftReplyWaitlist');
+                    updateDashboard();
+                }
+            });
+            
+            function showDashboard() {
+                // Hide login form
+                adminLogin.style.display = 'none';
+                
+                // Show dashboard
+                adminDashboard.style.display = 'block';
+                
+                // Update dashboard data
+                updateDashboard();
+            }
+            
+            function updateDashboard() {
+                // Get signup data
+                const signups = JSON.parse(localStorage.getItem('swiftReplyWaitlist') || '[]');
+                
+                // Update stats
+                document.getElementById('total-signups').textContent = signups.length;
+                
+                // Calculate today's signups
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todaySignups = signups.filter(signup => {
+                    const signupDate = new Date(signup.timestamp);
+                    return signupDate >= today;
+                });
+                document.getElementById('today-signups').textContent = todaySignups.length;
+                
+                // Calculate this week's signups
+                const weekStart = new Date();
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                weekStart.setHours(0, 0, 0, 0);
+                const weekSignups = signups.filter(signup => {
+                    const signupDate = new Date(signup.timestamp);
+                    return signupDate >= weekStart;
+                });
+                document.getElementById('this-week-signups').textContent = weekSignups.length;
+                
+                // Update table
+                const tableBody = document.getElementById('signups-table-body');
+                tableBody.innerHTML = '';
+                
+                // Sort signups by date (newest first)
+                signups.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                signups.forEach(signup => {
+                    const row = document.createElement('tr');
                     
-                    // Clear container
-                    emailListContainer.innerHTML = '';
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = signup.name;
+                    row.appendChild(nameCell);
                     
-                    // Add each email to the list
-                    data.forEach((item, index) => {
-                        const date = new Date(item.timestamp);
-                        const formattedDate = date.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                        
-                        const emailItem = document.createElement('div');
-                        emailItem.className = 'email-item';
-                        emailItem.innerHTML = `
-                            <div>${item.name}</div>
-                            <div>${item.email}</div>
-                            <div class="email-date">${formattedDate}</div>
-                        `;
-                        
-                        emailListContainer.appendChild(emailItem);
-                    });
+                    const emailCell = document.createElement('td');
+                    emailCell.textContent = signup.email;
+                    row.appendChild(emailCell);
                     
-                    // Update stats
-                    updateStats(data);
+                    const dateCell = document.createElement('td');
+                    const date = new Date(signup.timestamp);
+                    dateCell.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    row.appendChild(dateCell);
                     
-                    // Cr
+                    tableBody.appendChild(row);
+                });
+                
+                // Show message if no signups
+                if (signups.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 3;
+                    cell.textContent = 'No signups yet.';
+                    cell.style.textAlign = 'center';
+   
 (Content truncated due to size limit. Use line ranges to read in chunks)
